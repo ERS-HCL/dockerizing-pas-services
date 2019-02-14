@@ -1,0 +1,17 @@
+FROM openjdk:8-jre
+WORKDIR /
+#add required jars
+ADD administration-api-boot-4.0.jar administration-api-boot-4.0.jar
+
+#copy PAS license 
+COPY common.properties /usr/local/PAS/common.properties
+
+#change permissions
+RUN chmod -R 755 /usr/local/PAS/common.properties
+
+#expose port
+EXPOSE 82
+#cmd to execute
+#ENTRYPOINT ["java", "-Djava.security.egd=file:/dev/./urandom","-Dspring.profiles.active=docker","-jar","/administration-api-boot-4.0.jar"]
+
+ENTRYPOINT ["java","-Djava.security.egd=file:/dev/./urandom","-jar","/administration-api-boot-4.0.jar"]

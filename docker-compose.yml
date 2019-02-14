@@ -1,0 +1,72 @@
+version: '3'
+services:
+    postgresdb:
+        container_name: postgresdb
+        build:
+            context: .
+            dockerfile: DBDockerfile
+        volumes:
+            - 'pg:/var/lib/postgresql'
+            - 'pgdata:/var/lib/postgresql/data'
+        environment:
+            POSTGRES_USER: postgres
+            POSTGRES_PASSWORD: postgres
+            POSTGRES_DB: 'SECURITY,ADMIN'
+        ports:
+            - '5432:5432'
+        healthcheck:
+            test: [CMD-SHELL, 'pg_isready -U postgres']
+            interval: 10s
+            timeout: 5s
+            retries: 5
+        networks:
+            - samplenet
+    rabbitmq:
+        build:
+            context: .
+            dockerfile: RabbitmqDockerfile
+        container_name: rabbitmq
+        ports:
+            - '5672:5672'
+            - '15672:15672'
+        networks:
+            - samplenet
+    security:
+        build:
+            context: .
+            dockerfile: SecurityApiDockerfile
+        container_name: security
+        ports:
+            - '90:90'
+        networks:
+            - samplenet
+        depends_on:
+            - postgresdb
+    adminapi:
+        build:
+            context: .
+            dockerfile: AdminApiDockerfile
+        container_name: adminapi
+        ports:
+            - '82:82'
+        networks:
+            - samplenet
+        depends_on:
+            - postgresdb
+    metadata:
+        build:
+            context: .
+            dockerfile: MetadataDockerfile
+        container_name: metadata
+        ports:
+            - '81:81'
+        networks:
+            - samplenet
+        depends_on:
+            - postgresdb
+networks:
+    samplenet: null
+volumes:
+    pg: null
+    pgdata: null
+

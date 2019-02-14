@@ -1,0 +1,13 @@
+FROM postgres:9.5
+#init.sql to create database
+COPY init.sql /docker-entrypoint-initdb.d/
+RUN chmod 0755 /docker-entrypoint-initdb.d/init.sql
+
+# Adjust PostgreSQL configuration to accept remote connections 
+RUN echo "host all  all    0.0.0.0/0  md5" >> /var/lib/postgresql/data/pg_hba.conf
+
+RUN echo "listen_addresses='*'" >> /var/lib/postgresql/data/postgresql.conf
+
+# expose port
+EXPOSE 5432
+

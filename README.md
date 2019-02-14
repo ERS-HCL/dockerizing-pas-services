@@ -1,2 +1,2 @@
 # dockerizing-pas-services
-Sample dockerfiles for dockerizing HCL PAS Platform services
+Sample Dockerfiles for dockerizing HCL PAS Platform services
